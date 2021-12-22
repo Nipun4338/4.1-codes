@@ -1,0 +1,56 @@
+parent('Hasib','Rakib').
+parent('Rakib','Sohel').
+parent('Rakib','Rebeka').
+parent('Rashid','Hasib').
+parent('Hasib','Rahim').
+male('Hasib').
+male('Rakib').
+male('Sohel').
+male('Rashid').
+male('Rahim').
+female('Rebeka').
+
+
+grandparent(X,Z):-
+    parent(X,Y),parent(Y,Z).
+
+brother(Y,Z):-
+    parent(X,Y),parent(X,Z),Y\=Z,male(Y).
+
+sister(Y,Z):-
+    parent(X,Y),parent(X,Z),Y\=Z,female(Y).
+
+uncle(X,Z):-
+    parent(Y,Z),male(X),parent(R,X),parent(R,Y),X\=Y.
+
+aunt(X,Z):-
+    parent(Y,Z),female(X),parent(R,X),parent(R,Y),X\=Y.
+
+
+
+
+findGc:-
+    write('Grandchildren:'),read(Gc),write('Grandparent: '),
+    grandparent(Gp,Gc),write(Gp),tab(5),fail.
+findGc.
+
+findBr:-
+    write('Brother Of:'),read(Bo),write('Brother: '),
+    brother(Br,Bo),write(Br),tab(5),fail.
+findBr.
+
+findSr:-
+    write('Sister Of:'),read(So),write('Sister: '),
+    sister(Sr,So),write(Sr),tab(5),fail.
+findSr.
+
+findUn:-
+    write('Uncle Of:'),read(Uo),write('Uncle: '),
+    uncle(Ur,Uo),write(Ur),tab(5),fail.
+findUr.
+
+findAn:-
+    write('Aunt Of:'),read(Ao),write('Aunt: '),
+    aunt(Ar,Ao),write(Ar),tab(5),fail.
+findAr.
+
