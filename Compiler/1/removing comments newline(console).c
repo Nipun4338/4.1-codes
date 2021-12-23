@@ -68,7 +68,6 @@ int main(void)
         {
             printf("%c",c);
         }
-
         fclose(p1);
     }
 }
