@@ -1,40 +1,52 @@
 #include<stdio.h>
 
-int main(int argc, char *argv[])
+int main(void)
 {
-    FILE *p1, *p2;
+    FILE *p1, *p2, *p3;
     char c;
     //okfffffffffffffffffffffffff//kfnkfn
     /*
         hhmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
     */
-    p1=fopen(argv[2], "r");
+    char *cd[100000];
     p2=fopen("filtered.txt","w");
-    if(!p1)
+    p3=fopen("output.txt","w");
+    while(1)
+    {
+        fgets(cd,sizeof(cd),stdin);
+        if(strncmp(cd,"exit\n")==0)
+        {
+            break;
+        }
+        fputs(cd,p2);
+    }
+    fclose(p2);
+    p2=fopen("filtered.txt","r");
+    if(!p2)
     {
         printf("File cann't be opened!\n");
     }
     else
     {
-        while((c=fgetc(p1))!=EOF)
+        while((c=fgetc(p2))!=EOF)
         {
             if(c=='/')
             {
-                c=fgetc(p1);
+                c=fgetc(p2);
                 if(c=='/')
                 {
-                    while(c=fgetc(p1)!='\n')
+                    while(c=fgetc(p2)!='\n')
                     {
 
                     }
                 }
                 else if(c=='*')
                 {
-                    while(c=fgetc(p1))
+                    while(c=fgetc(p2))
                     {
                         if(c=='*')
                         {
-                            char d=fgetc(p1);
+                            char d=fgetc(p2);
                             if(d=='/')
                             {
                                 break;
@@ -43,23 +55,19 @@ int main(int argc, char *argv[])
                     }
                 }
             }
-            else if(c!='\n')
+            else if(c!='\n' && c>' ' && c!='\t' && c!='\b')
             {
-                fputc(c,p2);
+                fputc(c,p3);
             }
         }
-        fclose(p1);
         fclose(p2);
+        fclose(p3);
 
-        p1=fopen("filtered.txt","r");
+        p1=fopen("output.txt","r");
         while((c=fgetc(p1))!=EOF)
         {
             printf("%c",c);
         }
-
         fclose(p1);
     }
 }
-
-
-
