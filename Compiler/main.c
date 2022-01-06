@@ -175,6 +175,52 @@ int operators(char *str, int len)
     return flag;
 }
 
+int number(char *str, int len)
+{
+    int flag=0, count=0;
+    for(int i=0; i<len; i++)
+    {
+        if(!isdigit(str[i]))
+        {
+            if(str[i]=='.')
+            {
+                count++;
+            }
+            else
+            {
+                flag=1;
+            }
+        }
+    }
+    if(count>1)
+    {
+        flag=1;
+    }
+    return flag;
+}
+
+int identifier(char *str, int len)
+{
+    int flag=0;
+    for(int i=0; i<len; i++)
+    {
+        if(!isdigit(str[i]) && i==0)
+        {
+            if(!((str[i]>='A' && str[i]<='Z') || (str[i]>='a' && str[i]<='z') || str[i]=='_'))
+            {
+                flag=1;
+                break;
+            }
+        }
+        else if(!((str[i]>='A' && str[i]<='Z') || (str[i]>='a' && str[i]<='z') || str[i]=='_' || (str[i]>='0' && str[i]<='9')))
+        {
+            flag=1;
+            break;
+        }
+    }
+    return flag;
+}
+
 void tokenize()
 {
     p1=fopen("extra_space_removed.txt", "r");
@@ -200,10 +246,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('<', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('<', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('<', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='>')
@@ -218,10 +275,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('>', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('>', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('>', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='!')
@@ -236,10 +304,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('!', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('!', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('!', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='+')
@@ -261,10 +340,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('+', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('+', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('+', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='-')
@@ -286,10 +376,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('-', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('-', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('-', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='=')
@@ -304,10 +405,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('=', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('=', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('=', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='*')
@@ -322,10 +434,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('*', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('*', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('*', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='/')
@@ -340,10 +463,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('/', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('/', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('/', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else if(c=='%')
@@ -358,10 +492,21 @@ void tokenize()
             }
             else
             {
-                fputc(' ', p2);
-                fputc('%', p2);
-                fputc(' ', p2);
-                fputc(c, p2);
+                if(c==';' || c==',' || c=='(' || c==')' || c=='{' || c=='}' || c=='[' || c==']' || c=='\'')
+                {
+                    fputc(' ', p2);
+                    fputc('%', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                    fputc(' ', p2);
+                }
+                else
+                {
+                    fputc(' ', p2);
+                    fputc('%', p2);
+                    fputc(' ', p2);
+                    fputc(c, p2);
+                }
             }
         }
         else
@@ -390,7 +535,7 @@ void tokenize()
             {
                 fputs("[sep ",p2);
                 fputs(s,p2);
-                fputs("]",p2);
+                fputs("] ",p2);
                 //printf("[sep %s]", s);
             }
             else
@@ -400,7 +545,7 @@ void tokenize()
                 {
                     fputs("[kw ",p2);
                     fputs(s,p2);
-                    fputs("]",p2);
+                    fputs("] ",p2);
                     //printf("[kw %s]", s);
                 }
                 else
@@ -410,7 +555,7 @@ void tokenize()
                     {
                         fputs("[par ",p2);
                         fputs(s,p2);
-                        fputs("]",p2);
+                        fputs("] ",p2);
                         //printf("[par %s]", s);
                     }
                     else
@@ -420,8 +565,35 @@ void tokenize()
                         {
                             fputs("[op ",p2);
                             fputs(s,p2);
-                            fputs("]",p2);
+                            fputs("] ",p2);
                             //printf("[op %s]", s);
+                        }
+                        else
+                        {
+                            check=number(s,len);
+                            if(!check)
+                            {
+                                fputs("[num ",p2);
+                                fputs(s,p2);
+                                fputs("] ",p2);
+                            }
+                            else
+                            {
+                                check=identifier(s,len);
+                                if(!check)
+                                {
+                                    fputs("[id ",p2);
+                                    fputs(s,p2);
+                                    fputs("] ",p2);
+                                    //printf("[op %s]", s);
+                                }
+                                else
+                                {
+                                    fputs("[unkn ",p2);
+                                    fputs(s,p2);
+                                    fputs("] ",p2);
+                                }
+                            }
                         }
                     }
                 }
