@@ -520,6 +520,7 @@ void tokenize()
     p1=fopen("extra_space_removed.txt", "r");
     p2=fopen("tokenized_all.txt","w");
     char s[100];
+    memset(s, 0, sizeof s);
     int len=0;
     while((c=fgetc(p1))!=EOF)
     {
