@@ -147,6 +147,34 @@ int seperator(char *str, int len)
     return flag;
 }
 
+int parentheses(char *str, int len)
+{
+    int flag;
+    if(len==1 && (str[0]=='(' || str[0]==')' || str[0]=='{' || str[0]=='}' || str[0]=='[' || str[0]==']'))
+    {
+        flag=1;
+    }
+    else
+    {
+        flag=0;
+    }
+    return flag;
+}
+
+int operators(char *str, int len)
+{
+    int flag;
+    if(str[0]=='+' || str[0]=='-' || str[0]=='*' || str[0]=='/' || str[0]=='=' || str[0]=='>' || str[0]=='<' || str[0]=='%' || str[0]=='!' || str[0]=='&' || str[0]=='|' || str[0]=='^')
+    {
+        flag=1;
+    }
+    else
+    {
+        flag=0;
+    }
+    return flag;
+}
+
 void tokenize()
 {
     p1=fopen("extra_space_removed.txt", "r");
@@ -159,6 +187,182 @@ void tokenize()
             fputc(' ', p2);
             fputc(c, p2);
             fputc(' ', p2);
+        }
+        else if(c=='<')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('<', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('<', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='>')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('>', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('>', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='!')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('!', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('!', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='+')
+        {
+            c=fgetc(p1);
+            if(c=='+')
+            {
+                fputc(' ', p2);
+                fputc(c, p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('+', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('+', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='-')
+        {
+            c=fgetc(p1);
+            if(c=='-')
+            {
+                fputc(' ', p2);
+                fputc(c, p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('-', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('-', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='=')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc(c, p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('=', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='*')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('*', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('*', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='/')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('/', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('/', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
+        }
+        else if(c=='%')
+        {
+            c=fgetc(p1);
+            if(c=='=')
+            {
+                fputc(' ', p2);
+                fputc('%', p2);
+                fputc(c, p2);
+                fputc(' ', p2);
+            }
+            else
+            {
+                fputc(' ', p2);
+                fputc('%', p2);
+                fputc(' ', p2);
+                fputc(c, p2);
+            }
         }
         else
         {
@@ -184,14 +388,42 @@ void tokenize()
             int check=seperator(s,len);
             if(check)
             {
-                printf("[sep %s]", s);
+                fputs("[sep ",p2);
+                fputs(s,p2);
+                fputs("]",p2);
+                //printf("[sep %s]", s);
             }
             else
             {
                 check=keyword(s,len);
                 if(check)
                 {
-                    printf("[kw %s]", s);
+                    fputs("[kw ",p2);
+                    fputs(s,p2);
+                    fputs("]",p2);
+                    //printf("[kw %s]", s);
+                }
+                else
+                {
+                    check=parentheses(s,len);
+                    if(check)
+                    {
+                        fputs("[par ",p2);
+                        fputs(s,p2);
+                        fputs("]",p2);
+                        //printf("[par %s]", s);
+                    }
+                    else
+                    {
+                        check=operators(s,len);
+                        if(check)
+                        {
+                            fputs("[op ",p2);
+                            fputs(s,p2);
+                            fputs("]",p2);
+                            //printf("[op %s]", s);
+                        }
+                    }
                 }
             }
             memset(s, 0, sizeof s);
@@ -208,6 +440,6 @@ int main(void)
     comment_newline_remove();
     extra_space_remove("comments_and_newline_removed.txt");
     tokenize();
-    //output("extra_space_removed.txt");
+    output("tokenized_all.txt");
 }
 

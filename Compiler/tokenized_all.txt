@@ -1,0 +1,1 @@
+[sep ;][kw int][sep ,][sep ;][kw float][sep ,][sep ;][op =][sep ;][op =][sep ;][op =][op +][op *][sep ;][op =][op -][op /][sep ;][kw if][par (][op <=][par )][op =][sep '][sep ;][kw else][op =][sep '][sep ;]
