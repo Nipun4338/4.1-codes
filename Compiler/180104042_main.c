@@ -153,6 +153,10 @@ int parentheses(char *str, int len)
     if(len==1 && (str[0]=='(' || str[0]==')' || str[0]=='{' || str[0]=='}' || str[0]=='[' || str[0]==']'))
     {
         flag=1;
+        if(str[0]=='{' || str[0]=='}')
+        {
+            flag=2;
+        }
     }
     else
     {
@@ -552,9 +556,16 @@ void tokenize()
                 else
                 {
                     check=parentheses(s,len);
-                    if(check)
+                    if(check==1)
                     {
                         fputs("[par ",p2);
+                        fputs(s,p2);
+                        fputs("] ",p2);
+                        //printf("[par %s]", s);
+                    }
+                    else if(check==2)
+                    {
+                        fputs("[brc ",p2);
                         fputs(s,p2);
                         fputs("] ",p2);
                         //printf("[par %s]", s);
