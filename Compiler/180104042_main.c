@@ -7,9 +7,11 @@ char c;
 char *cd[100000];
 char array[3]={'/','*',' '};
 char *symbol[10000][6];
-char x1[100000],x2[100000],temp[100000],x3[10000][1000];
+char x1[100000],x2[100000],temp[100000],x3[10000][1000],ckt[70][70][500];;
 int index[10000];
 int cur = 0;
+
+
 struct data
 {
     char* name;
@@ -169,6 +171,10 @@ int parentheses(char *str, int len)
         if(str[0]=='{' || str[0]=='}')
         {
             flag=2;
+        }
+        else if(str[0]=='(' || str[0]==')')
+        {
+            flag=3;
         }
     }
     else
@@ -958,6 +964,423 @@ void symbolTable()
 
 }
 
+void error(){
+    char str[10000][10000];
+    char ar[10000],br[10000];
+    char a[10000],b[10000],temp[10000],c[70][70][500];
+    int inde[10000];
+    int cur = 0;
+    int sz[1000];
+    int i,n,t,k,j,x=0,y=0,m;
+    FILE *fp = fopen("input.txt","r");
+    FILE *fp2 = fopen("intermediate ouput.txt","w");
+    FILE *fp3 = fopen("error.txt","w");
+    i = 1;
+
+    // take input and comment remove 1st assignment
+    int c1 = 0, c2  = 0;
+    while(fgets(str[i],500,fp))
+    {
+        int sz = strlen(str[i]);
+        c1 = 0;
+        for(j=0; j<sz; j++)
+        {
+
+            if(j+1<sz && str[i][j]=='/' && str[i][j+1]=='/')
+            {
+                c1 = 1;
+                str[i][j]  = str[i][j+1]  = ' ';
+                j++;
+            }
+            else if(j+1<sz && str[i][j]=='/' && str[i][j+1]=='*')
+            {
+                c2 = 1;
+                str[i][j] = str[i][j+1]  =' ';
+                j++;
+            }
+            else if(j+1<sz && str[i][j]=='*' && str[i][j+1]=='/')
+            {
+                c2 = 0;
+                str[i][j]  = str[i][j+1] = ' ';
+                j++;
+            }
+            else if(c1 || c2)
+            {
+                str[i][j]  = ' ';
+            }
+
+        }
+        i++;
+    }
+    int totalsz = i;
+
+
+
+    // add proper space 2nd assignment
+    for(k=1; k<totalsz; k++)
+    {
+
+        int flag  =0;
+        int n = strlen(str[k]);
+        strcpy(ar,str[k]);
+        j = 0;
+        int sepOn = 0;
+        for(i=0; i<n; i++)
+        {
+
+            if(seperator(ar[i], 1)==1)
+            {
+                if(ar[i]=='\'')
+                {
+                    if(sepOn)
+                    {
+                        sepOn = 0;
+                        br[j++]  = ' ';
+                        br[j++]  = ar[i];
+                    }
+                    else
+                    {
+                        br[j++]  = ar[i];
+                        br[j++]  = ' ';
+                        sepOn = 1;
+                    }
+                }
+                else
+                {
+                    br[j++]  = ' ';
+                    br[j++]  = ar[i];
+                }
+                br[j++]  = ' ';
+
+
+            }
+            else if(operators(ar[i], 1)==1)
+            {
+                if(ar[i+1]=='=')
+                {
+                    br[j++]  = ' ';
+                    br[j++]  = ar[i];
+                    br[j++]  = ar[i+1];
+                    i++;
+                    br[j++]  = ' ';
+                }
+                else
+                {
+                    br[j++]  = ' ';
+                    br[j++]  = ar[i];
+                    br[j++]  = ' ';
+                }
+                flag  =1;
+            }
+            else if(number(ar[i], 1)==1)
+            {
+                if(flag==0)
+                {
+                    flag = 1;
+                    br[j++]  = ' ';
+                }
+                br[j++]  = ar[i];
+            }
+            else if(parentheses(ar[i], 1)==3)
+            {
+                br[j++]  = ' ';
+                br[j++]  = ar[i];
+                if(ar[i]!=')')
+                    br[j++]  = ' ';
+            }
+            else if(parentheses(ar[i],1)==2)
+            {
+                br[j++]  = ' ';
+                br[j++]  = ar[i];
+                if(ar[i]!='}')
+                    br[j++]  = ' ';
+            }
+            else
+            {
+                flag  =1;
+                br[j++]  = ar[i];
+            }
+        }
+        br[j-1]  = ' ';
+        br[j] = '\0';
+
+        strcpy(str[k],br);
+    }
+
+
+
+    //remove multiple whitespace 1st assignment
+
+    for(k=1; k<totalsz; k++)
+    {
+        strcpy(ar,str[k]);
+        br[0]  = '\0';
+        j = 0;
+        for(i=0; i<strlen(ar); i++)
+        {
+            if(ar[i]==' ')
+            {
+                br[j++]  = ' ';
+                while(i<strlen(ar) && ar[i]==' ')
+                    i++;
+                i--;
+            }
+            else br[j++]  =ar[i];
+
+        }
+        br[j]  = '\0';
+        strcpy(str[k],br);
+    }
+
+
+    //label the tokens assignment 2
+    int fb = 0,sb = 0;
+    int isIf = 0,semicolonIf=0;
+    for(k=1; k<=totalsz; k++)
+    {
+        j = 0;
+        int forloop = 0;
+        int pt = 0;
+        fprintf(fp2,"%d ",k);
+        strcpy(br,str[k]);
+        char pre[100] = {'-','1'};
+        for(i=0; i<strlen(br); i++)
+        {
+            if(br[i]==' ')
+            {
+
+                ar[j++] = '\0';
+                if(strlen(ar)==0)
+                {
+                    j  =0;
+                    continue;
+                }
+
+                if(seperator(ar, 1)==1)
+                {
+                    fprintf(fp2,"sep %s ",ar);
+                    if(strcmp(ar,";")==0)
+                    {
+                        semicolonIf++;
+                        if(forloop==2 || forloop==3)
+                            forloop++;
+                        else if(forloop>=4)
+                        {
+                            fprintf(fp3,"Only two semicolon in for loop at line %d\n",k);
+                        }
+                        else if(strcmp(ar,pre)==0)
+                        {
+                            fprintf(fp3,"Duplicate token at line %d\n",k);
+                        }
+                    }
+                    else if(strcmp(ar,pre)==0)
+                    {
+                        fprintf(fp3,"%Duplicate token at line %d\n",k);
+                    }
+                    strcpy(c[k][pt++],ar);
+
+                }
+                else if(keyword(ar, 1)==1)
+                {
+                    fprintf(fp2,"kw %s ",ar);
+                    if(strcmp(ar,"if")==0)
+                    {
+                        isIf  = 1;
+                        semicolonIf = 0;
+                    }
+                    else if(strcmp(ar,"else")==0)
+                    {
+                        if(isIf==0 || semicolonIf!=1)
+                        {
+                            fprintf(fp3,"'else' without a previous 'if' at line %d\n",k);
+                        }
+                        else isIf  = 0;
+                    }
+                    else if(strcmp(ar,"for")==0)
+                    {
+                        forloop = 1;
+                    }
+                    if(strcmp(ar,pre)==0)
+                    {
+                        fprintf(fp3,"Duplicate token at line %d\n",k);
+                    }
+                    strcpy(c[k][pt++],ar);
+
+                }
+                else if(identifier(ar, 1)==1)
+                {
+
+                    fprintf(fp2,"id %s ",ar);
+                    if(strcmp(ar,pre)==0)
+                    {
+                        fprintf(fp3,"Duplicate token at line %d\n",k);
+                    }
+                    strcpy(c[k][pt++],"id");
+                    strcpy(c[k][pt++],ar);
+                }
+                else if(operators(ar, 1)==1)
+                {
+                    fprintf(fp2,"op %s ",ar);
+                    strcpy(c[k][pt++],ar);
+                }
+                else if(parentheses(ar, 1)==3)
+                {
+                    fprintf(fp2,"par %s ",ar);
+                    if(strcmp(ar,"(")==0)
+                    {
+                        fb++;
+                        if(forloop==1)
+                            forloop++;
+                    }
+                    else
+                    {
+                        if(forloop>0 && forloop<4)
+                        {
+                            fprintf(fp3,"Expected ; in for loop at line %d\n",k);
+                        }
+                        else if(fb==0)
+                            fprintf(fp3,"Misplaced ) at line %d\n",k);
+                        else
+                        {
+                            fb--;
+                            if(forloop>0)
+                                forloop = 0;
+                        }
+                    }
+                    strcpy(c[k][pt++],ar);
+
+                }
+                else if(parentheses(ar, 1)==2)
+                {
+                    fprintf(fp2,"brc %s ",ar);
+                    if(strcmp(ar,"{")==0)
+                        sb++;
+                    else
+                    {
+
+                        if(sb==0)
+                            fprintf(fp3,"Misplaced } at line %d\n",k);
+                        else sb--;
+                    }
+                    strcpy(c[k][pt++],ar);
+                }
+                else if(number(ar, 1)==1)
+                {
+                    fprintf(fp2,"num %s ",ar);
+                    strcpy(c[k][pt++],ar);
+                }
+                else
+                {
+                    fprintf(fp2,"unkn %s ",ar);
+                    fprintf(fp3,"Undeclared/Unknown %s at line %d\n",ar,k);
+                    strcpy(c[k][pt++],ar);
+                }
+                j= 0;
+                strcpy(pre,ar);
+            }
+            else
+            {
+                ar[j++]  = br[i];
+            }
+
+        }
+        fprintf(fp2,"\n");
+        sz[k] =  pt;
+    }
+    if(sb>0)
+        fprintf(fp3,"Expected } at line %d\n",k-1);
+    if(fb>0)
+        fprintf(fp3,"Expected ) at line %d\n",k-1);
+
+
+
+    //duplicate/no declaration assignment 3
+    int it = 0;
+    char * scope = "global";
+    for(k=1; k<totalsz; k++)
+    {
+        for(i=0; i<sz[k]; i++)
+        {
+            if(strcmp(c[k][i],"id")==0)
+            {
+                if(strcmp(c[k][i+2],"(")==0)
+                {
+                    if(strcmp(c[k][i-1],"int")==0 || strcmp(c[k][i-1],"double")==0 || strcmp(c[k][i-1],"float")==0 || strcmp(c[k][i-1],"char")==0 || strcmp(c[k][i-1],"void")==0)
+                    {
+                        inde[it++]  = cur;
+                        insert(cur++,c[k][i+1],"func",c[k][i-1],scope,"");
+                        scope = c[k][i+1];
+                        i+= 2;
+                    }
+                    else
+                    {
+                        int pq  = search(c[k][i+1],"func","global");
+                        if(pq!=-1)
+                            inde[it++] = pq;
+                        else fprintf(fp3,"Expected declaration of function %s at line %d\n",c[k][i+1],k);
+                        i+= 2;
+                    }
+                }
+                else if(strcmp(c[k][i+2],"=")==0)
+                {
+                    if(strcmp(c[k][i-1],"int")==0 || strcmp(c[k][i-1],"double")==0 || strcmp(c[k][i-1],"float")==0 || strcmp(c[k][i-1],"char")==0 )
+                    {
+                        if(search(c[k][i+1],"var",scope)==-1)
+                        {
+                            inde[it++]  = cur;
+                            insert(cur++,c[k][i+1],"var",c[k][i-1],scope,modify(c[k][i+3]));
+                        }
+                        else
+                        {
+                            fprintf(fp3,"ID %s at line %d already declared in %s scope\n",c[k][i+1],k,scope);
+                        }
+                    }
+                    else
+                    {
+                        int pq = search(c[k][i+1],"var",scope);
+                        if(pq==-1)
+                        {
+                            fprintf(fp3,"Expected declaration of %s at line %d\n",c[k][i+1],k);
+                        }
+                        else
+                        {
+                            update(pq,modify(c[k][i+3]));
+                            inde[it++]  = pq;
+                        }
+                    }
+                    i+=2;
+                }
+                else if(strcmp(c[k][i+2],";")==0 || strcmp(c[k][i+2],",")==0 || strcmp(c[k][i+2],")")==0 )
+                {
+                    if(strcmp(c[k][i-1],"int")==0 || strcmp(c[k][i-1],"double")==0 || strcmp(c[k][i-1],"float")==0 || strcmp(c[k][i-1],"char")==0 )
+                    {
+                        if(search(c[k][i+1],"var",scope)==-1)
+                        {
+                            inde[it++]  = cur;
+                            insert(cur++,c[k][i+1],"var",c[k][i-1],scope,"");
+                        }
+                        else fprintf(fp3,"ID %s at line %d already declared in %s scope\n",c[k][i+1],k,scope);
+                        i+= 2;
+                    }
+                    else
+                    {
+                        if(search(c[k][i+1],"var",scope)==-1)
+                        {
+                            fprintf(fp3,"Expected declaration of %s at line %d\n",c[k][i+1],k);
+                        }
+                        else inde[it++]  = search(c[k][i+1],"var",scope);
+                        i+= 2;
+                    }
+                }
+            }
+            else if(strcmp(c[k][i],"}")==0)
+            {
+                scope = "global";
+            }
+        }
+    }
+}
+
 int main(void)
 {
     input();
@@ -966,6 +1389,7 @@ int main(void)
     tokenize();
     onlyIdentifier();
     symbolTable();
+    error();
     //output("tokenized_all.txt");
 }
 
