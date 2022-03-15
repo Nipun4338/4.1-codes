@@ -1,2 +1,1 @@
-Duplicate token at line 1
-ID a at line 1 already declared in global scope
+Expected declaration of a at line 1

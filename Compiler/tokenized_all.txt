@@ -1,1 +1,1 @@
-[kw int][id a][sep ;][sep ;]
+[id a][op =][num 5][sep ;]

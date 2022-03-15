@@ -1312,7 +1312,7 @@ void error(){
                 ar[j++] = '\0';
                 if(strlen(ar)==0)
                 {
-                    j  =0;
+                    j=0;
                     continue;
                 }
 
